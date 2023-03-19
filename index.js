@@ -56,11 +56,15 @@ class Board {
     for (let i = 0; i < 8; i++) {
       let condition = WIN_CONDITIONS[i];
       if ((board & condition) == condition) {
-        return true;
+        return 1;
       }
     }
 
-    return false;
+    if ((this.boards[0] | this.boards[1]) == 511) {
+      return -1;
+    }
+
+    return 0;
   }
 
   clone() {
@@ -96,29 +100,35 @@ class Position {
     let p = this.player;
     let r1 = this.subboards[s].move(i, p);
     if (r1) {
-      this.board.move(s, p);
+      if (r1 == 1) {
+        this.board.move(s, p);
+      }
       this.legalBoards = this.legalBoards & ~(0b1 << s);
     }
     this.player = 1 - this.player;
     let mask = 0b1 << i;
     this.subboard = (this.legalBoards & mask) == mask ? i : null;
   }
-}
 
-function randint() {
-  return Math.floor(Math.random() * 9);
+  score() {
+    let score = 0;
+
+    for (let i = 0; i < 9; i++) {
+      score += this.subboards[i].score();
+    }
+
+    score += this.board.score() * 10;
+    return score;
+  }
 }
 
 let P = new Position();
 let iters = 1_000_000;
-let moves = [];
-
 let start = performance.now();
 console.profile();
 for (let i = 0; i < iters; i++) {
-  let P2 = new Position(P);
-  P2.move(0, 0);
+  P.score();
 }
 console.profileEnd();
 let time = performance.now() - start;
-console.log(`${iters / time}`);
+console.log(`${(time / iters) * 1_000_000}ns per move`);
