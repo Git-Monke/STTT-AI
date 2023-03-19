@@ -1,10 +1,3 @@
-const { readFile } = require("fs");
-
-const readline = require("readline").createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
 const WIN_CONDITIONS = [
   0b111000000, 0b000111000, 0b000000111, 0b100100100, 0b010010010, 0b001001001,
   0b100010001, 0b001010100,
@@ -19,6 +12,10 @@ function bitcount(b) {
   }
 
   return count;
+}
+
+function random64Bit() {
+  return BigInt(Math.floor(Math.random() * 2 ** 64));
 }
 
 class Board {
@@ -161,8 +158,8 @@ function minimax(P, depth, alpha = -Infinity, beta = Infinity) {
   let player = P.player;
 
   // Check for a win
-  if (board.checkWin(board.boards[1 - player])) {
-    let sign = 1 - player == 1 ? -1 : 1;
+  if (board.checkWin(board.boards[player])) {
+    let sign = player == 1 ? -1 : 1;
     return 1_000_000 * sign;
   }
 
@@ -235,9 +232,38 @@ function solve(P, depth) {
   return bestMove;
 }
 
+const container = document.getElementById("container");
+
 let depth = 8;
 let P = new Position();
-console.log(solve(P, depth));
+
+for (let s = 0; s < 9; s++) {
+  let newSub = document.createElement("div");
+  newSub.classList.add("subboard");
+
+  for (let i = 0; i < 9; i++) {
+    let newTile = document.createElement("div");
+    newTile.classList.add("tile");
+    newTile.id = s * 9 + i;
+
+    newTile.addEventListener("click", (_) => {
+      let s = Math.floor(newTile.id / 9);
+      let i = newTile.id % 9;
+
+      newTile.classList.add("tile--red");
+      P.move(s, i);
+      let move = solve(P, depth);
+      document
+        .getElementById(move[0] * 9 + move[1])
+        .classList.add("tile--blue");
+      P.move(move[0], move[1]);
+    });
+
+    newSub.appendChild(newTile);
+  }
+
+  container.appendChild(newSub);
+}
 
 // P.move(4, 4);
 // let start = performance.now();

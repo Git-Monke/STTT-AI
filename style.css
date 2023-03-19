@@ -1,0 +1,29 @@
+#container {
+    width: 50%;
+    aspect-ratio: 1;
+    border: 3px solid black;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 5px;
+    padding: 5px;
+}
+
+.subboard {
+    border: 2px solid black;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+.tile {
+    border: 1px solid black;
+}
+
+.tile--red {
+     background-color: red;
+}
+
+.tile--blue {
+    background-color: blue;
+}
