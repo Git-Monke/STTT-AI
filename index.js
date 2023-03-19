@@ -18,6 +18,20 @@ function random64Bit() {
   return BigInt(Math.floor(Math.random() * 2 ** 64));
 }
 
+function bitPair64() {
+  return [random64Bit(), random64Bit()];
+}
+
+// Contains 164 randomized 64 bit numbers
+// Each tile on the board gets 2 random 64 bit numbers, one for each player
+// Then there are 2 more that represent whose turn it is to play
+const zobristKeys = {
+  boards: Array.from({ length: 9 }, () =>
+    Array.from({ length: 9 }, () => bitPair64())
+  ),
+  player: bitPair64(),
+};
+
 class Board {
   constructor() {
     this.boards = [0b000000000, 0b000000000];
@@ -232,7 +246,27 @@ function solve(P, depth) {
   return bestMove;
 }
 
-const container = document.getElementById("container");
+function hash(P) {
+  let hash = BigInt(0);
+
+  for (let s = 0; s < 9; s++) {
+    for (let i = 0; i < 9; i++) {
+      let boards = P.subboards[s].boards;
+      let m = 0b1 << i;
+      if ((boards[0] & m) == m) {
+        hash ^= zobristKeys.boards[s][i][0];
+      } else if ((boards[1] & m) == m) {
+        hash ^= zobristKeys.boards[s][i][1];
+      }
+    }
+  }
+
+  hash ^= zobristKeys.player[P.player];
+
+  return hash;
+}
+
+// const container = document.getElementById("container");
 
 let depth = 8;
 let P = new Position();
@@ -252,11 +286,13 @@ for (let s = 0; s < 9; s++) {
 
       newTile.classList.add("tile--red");
       P.move(s, i);
+      console.log(hash(P));
       let move = solve(P, depth);
       document
         .getElementById(move[0] * 9 + move[1])
         .classList.add("tile--blue");
       P.move(move[0], move[1]);
+      console.log(hash(P));
     });
 
     newSub.appendChild(newTile);
@@ -278,8 +314,8 @@ for (let s = 0; s < 9; s++) {
 // let start = performance.now();
 // console.profile();
 // for (let i = 0; i < iters; i++) {
-//   P.score();
+//   hash(P);
 // }
 // console.profileEnd();
 // let time = performance.now() - start;
-// console.log(`${(time / iters) * 1_000_000}ns per move`);
+// console.log(`${(time / iters) * 1_000_000}ns per hash`);
