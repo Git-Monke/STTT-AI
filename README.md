@@ -1,6 +1,6 @@
 ## Strategic Tic Tac Toe AI
 
-**Please start by looking at scripts/index.js, as this is where the actual minimax is. Then move to board.js, as this is the most clever part of my solution! It can check for wins with only 8 binary and 8 equality comparisons!**
+**Please start by looking at scripts/index.js, as this is where the actual minimax is. Then move to scripts/position/board.js, as this is the most clever part of my solution! It can check for wins with only 8 binary and 8 equality comparisons!**
 
 This is the code for the AI for strategic tic tac toe. This was a project that we had to do for CART 2022-2023. My partner made the frontend of the website, while I worked on the AI. 
 
