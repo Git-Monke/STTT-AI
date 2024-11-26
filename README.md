@@ -8,6 +8,4 @@ I wrote a basic minimax algorithm with alpha-beta pruning for this. Pretty stand
 
 I tried to implement zobrist keys and hashing to optimize further, but this unfortunately didn't improve the speed of the bot, so that code is not included in the final solution.
 
-You can play STTT [here](https://tictactoe2-0.netlify.app/)
-Make sure to set player 2 to AI.
-Thanks!
+You can play STTT [here](https://tictactoe2-0.netlify.app/). Just make sure to set player 2 to AI.
